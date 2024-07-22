@@ -12,32 +12,65 @@ public_users.post("/register", (req,res) => {
 
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    // console.log(books);
+    return res.status(300).json({message: books});
 });
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  let par = req.params.isbn
+  par = Number(par)  
+  return res.status(300).json(books[par]);
  });
   
 // Get book details based on author
-public_users.get('/author/:author',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+public_users.get('/author/:author',function (req, res) 
+{
+    let par = req.params.author
+    // let len = Object.keys(books).length
+
+    // console.log(par);
+
+    for (const key in books) 
+    {
+        // console.log(books[key]["author"]);   
+        if(books[key]["author"] == par)
+        {
+            return res.status(300).json(books[key])
+        }
+    }
+
+    return res.json({error: "No author found"})
+    
 });
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+public_users.get('/title/:title',function (req, res) 
+{
+    let a = req.params.title
+
+    for( const key in books){
+        if(books[key]["title"] == a)
+        {
+            return res.json(books[key])
+        }
+    }
+
+    return res.json({error: "No Title found"})
 });
 
 //  Get book review
-public_users.get('/review/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+public_users.get('/review/:isbn',function (req, res) 
+{
+    let b = req.params.isbn
+
+    for(const key in books){
+        if(key == Number(b))
+        {
+            return res.json(books[key]["reviews"])
+        }
+    }
+    return res.json({error: "No Title found"})
 });
 
 module.exports.general = public_users;
