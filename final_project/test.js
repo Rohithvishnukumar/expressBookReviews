@@ -29,3 +29,7 @@ if(a === b){
 else{
     console.log("Else");
 }
+
+const r = "rohith"
+
+console.log(r.length);  

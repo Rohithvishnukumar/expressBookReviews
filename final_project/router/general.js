@@ -5,9 +5,41 @@ let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
 
-public_users.post("/register", (req,res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+public_users.post("/register", (req,res) => 
+{
+    const usr = req.body.username
+    const psw = req.body.password
+
+    // console.log(typeof (usr))
+
+    if( usr.length < 4 ){
+        return res.json({error: "The username must contain atleast 4 digits"})
+    }
+
+    if( psw.length < 8 ){
+        return res.json({error: "The password must contain atleast 8 digits"})
+    }
+
+    for(const i of users){
+      console.log(i);
+      console.log(i.user);
+
+        if(i.user == usr){
+            return res.json({error: "The username already exist"})
+        }
+    }
+
+    let obj = {
+        username : usr,
+        password : psw
+    }
+
+    // obj = JSON.stringify(obj)
+
+    users.push(obj)
+    console.log(users);
+
+    return res.json({"SUCCESS" : `Your Username and password has been registered ${usr} ` })
 });
 
 // Get the book list available in the shop
