@@ -3,6 +3,8 @@ let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
+const axios = require("axios")
+
 
 
 public_users.post("/register", (req,res) => 
@@ -42,49 +44,63 @@ public_users.post("/register", (req,res) =>
     return res.json({"SUCCESS" : `Your Username and password has been registered ${usr} ` })
 });
 
+
+public_users.get("/books", function(req,res)
+{
+    return res.json(books)
+})
+
 // Get the book list available in the shop
-public_users.get('/',function (req, res) {
-    // console.log(books);
-    return res.status(300).json({message: books});
+public_users.get('/',async function(req, res) {
+    
+    // return res.status(300).json({message: books});
+
+    //  Using Axios
+
+    const a = await axios.get("http://localhost:5000/books")
+    console.log(a.data)
+
+    return res.json({message : a.data})
+
 });
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
+public_users.get('/isbn/:isbn', async function (req, res) {
   let par = req.params.isbn
   par = Number(par)  
-  return res.status(300).json(books[par]);
+  const a = await axios.get("http://localhost:5000/books")
+  return res.json(a.data[par])
  });
   
+
 // Get book details based on author
-public_users.get('/author/:author',function (req, res) 
+public_users.get('/author/:author', async function (req, res) 
 {
     let par = req.params.author
-    // let len = Object.keys(books).length
-
-    // console.log(par);
+    const a = await axios.get("http://localhost:5000/books")
 
     for (const key in books) 
     {
         // console.log(books[key]["author"]);   
-        if(books[key]["author"] == par)
+        if(a.data[key]["author"] == par)
         {
-            return res.status(300).json(books[key])
+            return res.status(300).json(a.data[key])
         }
     }
-
-    return res.json({error: "No author found"})
-    
+    return res.json({error: "No author found"})   
 });
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) 
+public_users.get('/title/:title', async function (req, res) 
 {
     let a = req.params.title
 
-    for( const key in books){
-        if(books[key]["title"] == a)
+    const b = await axios.get("http://localhost:5000/books")
+
+    for( const key in b.data){
+        if(b.data[key]["title"] == a)
         {
-            return res.json(books[key])
+            return res.json(b.data[key])
         }
     }
 
